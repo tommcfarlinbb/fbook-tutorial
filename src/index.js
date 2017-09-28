@@ -2,35 +2,48 @@ import './index.css';
 import expect from 'expect';
 import deepFreeze from 'deep-freeze';
 
-// add counter
-const toggleToDoCheckbox = (todo) => {
-    // proposed for ES7
-    // return {
-        //     ...todo,
-        //     checkbox: !todo.checkbox,
-        // }
-        
-    return Object.assign({}, todo, {checkbox: !todo.checkbox});
-}
+// reducer
+const todos = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD':
+            return [
+                ...state,
+                {
+                    id: action.id,
+                    title: action.title,
+                    description: action.description,
+                    checkbox: false,
+                }
+            ];
+        default:
+            return state;
+    }
+};
 
 // tests
-const testToggleToDoCheckbox = () => {
-    const todoBefore = {
+const testAddTodo = () => {
+    const stateBefore = [];
+    const action = {
+        type: 'ADD',
+        id: 0,
+        title: 'My To Do List',
+        description: 'To Do List Description',
+    };
+    const stateAfter = [{
+        id: 0,
         title: 'My To Do List',
         description: 'To Do List Description',
         checkbox: false,
-    };
-    const todoAfter = {
-        title: 'My To Do List',
-        description: 'To Do List Description',
-        checkbox: true,
-    };
+    }];
 
-    deepFreeze(todoBefore)
-    expect(toggleToDoCheckbox(todoBefore))
-        .toEqual(todoAfter);
+    deepFreeze(stateBefore)
+    deepFreeze(action)
+
+    expect(
+        todos(stateBefore, action)
+    ).toEqual(stateAfter);
 };
-testToggleToDoCheckbox();
-console.log("toggle todo checkbox test passed")
+testAddTodo();
+console.log("add todo test passed")
 
 console.log("tests passed")
