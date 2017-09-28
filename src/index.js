@@ -15,13 +15,24 @@ const todos = (state = [], action) => {
                     checkbox: false,
                 }
             ];
+        case 'TOGGLE':
+            return state.map(todo => {
+                if (todo.id !== action.id) {
+                    return todo;
+                } else {
+                    return {
+                        ...todo,
+                        checkbox: !todo.checkbox
+                    };
+                }
+            })
         default:
             return state;
     }
 };
 
 // tests
-const testAddTodo = () => {
+const testAddToDo = () => {
     const stateBefore = [];
     const action = {
         type: 'ADD',
@@ -43,7 +54,51 @@ const testAddTodo = () => {
         todos(stateBefore, action)
     ).toEqual(stateAfter);
 };
-testAddTodo();
+testAddToDo();
 console.log("add todo test passed")
+
+const testToggleToDo = () => {
+    const stateBefore = [
+        {
+            id: 0,
+            title: 'Do laundry',
+            description: 'Just do it',
+            checkbox: false,
+        },
+        {
+            id: 1,
+            title: 'Make bed',
+            description: 'Just make it',
+            checkbox: false,
+        },
+    ];
+    const action = {
+        type: 'TOGGLE',
+        id: 0,
+    };
+    const stateAfter = [
+        {
+            id: 0,
+            title: 'Do laundry',
+            description: 'Just do it',
+            checkbox: true,
+        },
+        {
+            id: 1,
+            title: 'Make bed',
+            description: 'Just make it',
+            checkbox: false,
+        },
+    ];
+
+    deepFreeze(stateBefore);
+    deepFreeze(action);
+
+    expect(
+        todos(stateBefore, action)
+    ).toEqual(stateAfter);
+}
+testToggleToDo();
+console.log("toggle todo test passed")
 
 console.log("tests passed")
